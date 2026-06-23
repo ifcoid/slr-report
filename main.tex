@@ -1,0 +1,374 @@
+%==============================================================================
+%  TEMPLATE LAPORAN SYSTEMATIC LITERATURE REVIEW (SLR)
+%  Program Diploma IV Teknik Informatika
+%  Universitas Logistik dan Bisnis Internasional (ULBI)
+%
+%  Hasil konversi LaTeX dari "templateslr.docx".
+%
+%  Kompilasi:
+%     pdflatex main
+%     bibtex   main
+%     pdflatex main
+%     pdflatex main
+%  atau cukup:  latexmk -pdf main.tex
+%==============================================================================
+\documentclass[12pt,a4paper,oneside]{report}
+
+%------------------------------------------------------------------ encoding & bahasa
+\usepackage[T1]{fontenc}
+\usepackage[utf8]{inputenc}
+\usepackage[english,bahasa]{babel}      % bahasa utama: Indonesia
+
+%------------------------------------------------------------------ font Times New Roman
+\usepackage{newtxtext,newtxmath}        % pengganti Times New Roman
+
+%------------------------------------------------------------------ tata letak halaman
+% Margin mengikuti templateslr.docx (kiri/kanan 3 cm). Untuk format jilid
+% Indonesia (kiri 4 cm) ubah "left=3cm" menjadi "left=4cm".
+\usepackage[a4paper,top=3cm,bottom=3cm,left=3cm,right=3cm]{geometry}
+\usepackage{setspace}
+\onehalfspacing                         % spasi 1,5
+
+%------------------------------------------------------------------ paket pendukung
+\usepackage{graphicx}
+\usepackage{enumitem}
+\usepackage{array}
+\usepackage{longtable}
+\usepackage{booktabs}
+\usepackage{ragged2e}
+\usepackage{titlesec}
+\usepackage{fancyhdr}
+\usepackage{caption}
+% hypertexnames=false -> anchor halaman dibuat berurutan secara internal,
+% sehingga reset nomor halaman tiap BAB tidak menimbulkan bentrokan anchor.
+\usepackage[hidelinks,hypertexnames=false]{hyperref}
+
+%------------------------------------------------------------------ nama bagian (Bahasa Indonesia)
+\addto\captionsbahasa{%
+  \renewcommand{\contentsname}{DAFTAR ISI}%
+  \renewcommand{\listfigurename}{DAFTAR GAMBAR}%
+  \renewcommand{\listtablename}{DAFTAR TABEL}%
+  \renewcommand{\bibname}{DAFTAR PUSTAKA}%
+  \renewcommand{\chaptername}{BAB}%
+}
+
+%------------------------------------------------------------------ penomoran sub-bab
+% Bab heading memakai angka Romawi (BAB I, BAB II), namun penomoran sub-bab,
+% gambar, dan tabel memakai angka Arab seperti pada dokumen sumber.
+\setcounter{secnumdepth}{3}
+\renewcommand{\thesection}{\arabic{section}}
+\renewcommand{\thesubsection}{\thesection.\arabic{subsection}}
+\renewcommand{\thesubsubsection}{\thesubsection.\arabic{subsubsection}}
+
+%------------------------------------------------------------------ format judul BAB
+\titleformat{\chapter}[display]
+  {\centering\normalfont\bfseries\large}
+  {BAB \Roman{chapter}}{6pt}{\MakeUppercase}
+\titlespacing*{\chapter}{0pt}{0pt}{20pt}
+
+\titleformat{\section}{\normalfont\bfseries}{\thesection.}{0.6em}{}
+\titleformat{\subsection}{\normalfont\bfseries}{\thesubsection}{0.6em}{}
+\titleformat{\subsubsection}{\normalfont\bfseries\itshape}{\thesubsubsection}{0.6em}{}
+
+%------------------------------------------------------------------ caption gambar & tabel
+\renewcommand{\thefigure}{\arabic{chapter}.\arabic{figure}}
+\renewcommand{\thetable}{\arabic{chapter}.\arabic{table}}
+\captionsetup[figure]{name=Gambar,labelsep=space,justification=centering,font=bf}
+\captionsetup[table]{name=Tabel,labelsep=space,justification=centering,font={bf,it},position=above}
+
+%------------------------------------------------------------------ reset nomor halaman tiap BAB
+% Halaman ditulis dengan format <Romawi-Bab>-<halaman>, mis. I-1, II-6.
+\makeatletter
+\let\slr@old@chapter\@chapter
+\def\@chapter[#1]#2{\setcounter{page}{1}\slr@old@chapter[{#1}]{#2}}
+\makeatother
+
+\newcommand{\mulaiisi}{%
+  \clearpage
+  \setcounter{chapter}{0}%
+  \renewcommand{\thepage}{\Roman{chapter}-\arabic{page}}%
+}
+
+%------------------------------------------------------------------ footer: nomor halaman tengah bawah
+\pagestyle{fancy}
+\fancyhf{}
+\fancyfoot[C]{\thepage}
+\renewcommand{\headrulewidth}{0pt}
+\fancypagestyle{plain}{%
+  \fancyhf{}\fancyfoot[C]{\thepage}\renewcommand{\headrulewidth}{0pt}}
+
+%==============================================================================
+%  METADATA  ---  ubah bagian ini sesuai laporan Anda
+%==============================================================================
+\newcommand{\judulID}{TINJAUAN STUDI LITERATUR PERAN \textit{MACHINE LEARNING} DALAM MEMPREDIKSI \textit{HAPPINESS} DAN KESEJAHTERAAN SOSIAL-EKONOMI}
+\newcommand{\judulEN}{A SYSTEMATIC LITERATURE REVIEW ON THE ROLE OF MACHINE LEARNING IN PREDICTING HAPPINESS AND SOCIOECONOMIC WELL-BEING}
+\newcommand{\jenisID}{LAPORAN INTERNSHIP 2}
+\newcommand{\jenisEN}{INTERNSHIP 2 REPORT}
+\newcommand{\subjudulID}{Diajukan Sebagai Salah Satu Syarat Kelulusan Mata Kuliah Internship~2 Pada Program Pendidikan Diploma IV Teknik Informatika.}
+\newcommand{\subjudulEN}{\textit{Submitted as one of the graduation requirements for the Internship~2 course in the Informatics Engineering Diploma IV Education Program}}
+\newcommand{\penulis}{ROFI NAFIIS ZAIN}
+\newcommand{\nim}{1.21.4.017}
+\newcommand{\prodi}{PROGRAM DIPLOMA IV TEKNIK INFORMATIKA}
+\newcommand{\fakultas}{SCHOOL OF TECHNOLOGY INFORMATION}
+\newcommand{\universitas}{UNIVERSITAS LOGISTIK DAN BISNIS INTERNASIONAL}
+\newcommand{\kota}{Bandung}
+\newcommand{\bulantahun}{Juni 2026}
+\newcommand{\logo}{images/logo-ulbi.png}
+
+%==============================================================================
+\begin{document}
+\pagestyle{empty}
+
+%------------------------------------------------------------------ HALAMAN SAMPUL (Indonesia)
+\begin{titlepage}\centering
+  \begin{spacing}{1.2}
+    {\bfseries\large \judulID\par}
+    \vspace{1.5em}
+    {\bfseries\large \jenisID\par}
+    \vspace{1em}
+    {\itshape \subjudulID\par}
+  \end{spacing}
+  \vspace{1.5em}
+  \includegraphics[width=0.45\textwidth]{\logo}\par
+  \vspace{1.5em}
+  {\bfseries Dibuat oleh,\par}
+  \vspace{0.5em}
+  {\bfseries \nim\quad \penulis\par}
+  \vfill
+  {\bfseries \prodi\par}
+  {\bfseries \fakultas\par}
+  {\bfseries \universitas\par}
+\end{titlepage}
+
+%------------------------------------------------------------------ HALAMAN SAMPUL (Inggris)
+\begin{titlepage}\centering
+  \begin{spacing}{1.2}
+    {\bfseries\large \judulEN\par}
+    \vspace{1.5em}
+    {\bfseries\large \jenisEN\par}
+    \vspace{1em}
+    {\itshape \subjudulEN\par}
+  \end{spacing}
+  \vspace{1.5em}
+  \includegraphics[width=0.45\textwidth]{\logo}\par
+  \vspace{1.5em}
+  {\bfseries Created by,\par}
+  \vspace{0.5em}
+  {\bfseries \nim\quad \penulis\par}
+  \vfill
+  {\bfseries APPLIED BACHELOR PROGRAM INFORMATICS ENGINEERING\par}
+  {\bfseries \fakultas\par}
+  {\bfseries \universitas\par}
+\end{titlepage}
+
+%------------------------------------------------------------------ LEMBAR PENGESAHAN (hasil scan)
+% Sisipkan halaman pengesahan/persetujuan yang sudah ditandatangani di sini,
+% misalnya hasil scan dalam bentuk gambar atau PDF:
+%   \includegraphics[width=\textwidth]{images/lembar-pengesahan.jpg}
+%   \includegraphics[width=\textwidth]{images/lembar-persetujuan.jpg}
+%   \includegraphics[width=\textwidth]{images/lembar-orisinalitas.jpg}
+
+%==============================================================================
+%  BAGIAN AWAL  (penomoran i, ii, iii, ...)
+%==============================================================================
+\pagenumbering{roman}
+\pagestyle{fancy}
+
+%------------------------------------------------------------------ ABSTRAK
+\chapter*{ABSTRAK}
+\addcontentsline{toc}{chapter}{ABSTRAK}
+\justifying
+Tuliskan abstrak Bahasa Indonesia di sini: latar belakang singkat, tujuan
+\textit{Systematic Literature Review} (SLR), metode (mis. PRISMA), ringkasan
+temuan, dan kontribusi penelitian. Satu paragraf, umumnya 150--250 kata.
+
+\par\vspace{1em}
+\noindent\textbf{Kata Kunci:} \textit{Machine Learning, Well-Being Prediction,
+Life Satisfaction, Happiness Index, Socio-economic Factors}
+
+%------------------------------------------------------------------ ABSTRACT
+\chapter*{ABSTRACT}
+\addcontentsline{toc}{chapter}{\textit{ABSTRACT}}
+\justifying
+\textit{Write the English abstract here as a faithful translation of the
+Indonesian abstract above.}
+
+\par\vspace{1em}
+\noindent\textbf{Keyword:} \textit{Machine Learning, Neural Decoding,
+Alphanumeric, Brain-Computer Interface, Systematic Literature Review (SLR)}
+
+%------------------------------------------------------------------ KATA PENGANTAR
+\chapter*{KATA PENGANTAR}
+\addcontentsline{toc}{chapter}{KATA PENGANTAR}
+\justifying
+Puji syukur penulis panjatkan kepada Tuhan Yang Maha Esa, karena atas berkat
+Rahmat-Nya, laporan dengan judul \textit{``\judulEN''} dapat diselesaikan tepat
+pada waktunya. Pada kesempatan ini penulis menyampaikan terima kasih kepada:
+
+\begin{enumerate}[label=\arabic*., leftmargin=*, itemsep=2pt]
+  \item Kedua orang tua penulis atas dukungan, semangat, dan doanya.
+  \item Rektor \universitas.
+  \item Ketua Program Studi Sarjana Terapan Teknik Informatika.
+  \item Dosen pembimbing utama atas bimbingan dan masukannya.
+  \item Dosen pembimbing kedua atas bimbingan dan masukannya.
+  \item Dosen penguji atas masukan dan dukungannya.
+  \item Teman-teman yang telah membantu dan memberi dukungan.
+\end{enumerate}
+
+Penulis menyadari laporan ini masih memiliki keterbatasan, sehingga kritik dan
+saran dari pembaca sangat diharapkan.
+
+\par\vspace{2em}
+\hfill\begin{tabular}{c}\kota, \bulantahun\\[3em]\penulis\end{tabular}
+
+%------------------------------------------------------------------ DAFTAR ISI / GAMBAR / TABEL / LAMPIRAN
+\tableofcontents
+\listoffigures
+\listoftables
+
+\chapter*{DAFTAR LAMPIRAN}
+\addcontentsline{toc}{chapter}{DAFTAR LAMPIRAN}
+\begin{description}[leftmargin=0pt,labelindent=0pt]
+  \item[] Lampiran 1\quad Formulir Kemajuan Bimbingan Internship 2
+\end{description}
+
+%==============================================================================
+%  BAGIAN ISI  (penomoran I-1, II-1, ...)
+%==============================================================================
+\mulaiisi
+
+%------------------------------------------------------------------ BAB I
+\chapter{PENDAHULUAN}\justifying
+
+\section{Latar Belakang}
+Uraikan latar belakang penelitian: fenomena/masalah, urgensi, ringkasan
+penelitian terdahulu, dan posisi penelitian ini. Sitasi memakai gaya IEEE,
+contoh \cite{kaufman2022,ruggeri2020}. Beberapa sumber sekaligus
+\cite{casaccia2020,izumi2021}.
+
+\section{Identifikasi Masalah}
+Adapun identifikasi masalah dari penelitian ini sebagai berikut.
+\begin{enumerate}[label=\arabic*., leftmargin=*, itemsep=2pt]
+  \item Bagaimana integrasi teknik \textit{machine learning} dapat meningkatkan
+        prediksi kesejahteraan dan kepuasan hidup di berbagai konteks sosioekonomi?
+  \item Apa peran PDB dan ketimpangan pendapatan dalam memengaruhi kebahagiaan
+        dan kualitas hidup, dan bagaimana \textit{machine learning} dapat
+        memberikan wawasan yang lebih mendalam tentang hubungan ini?
+  \item Apa saja aplikasi baru dari indeks kebahagiaan dalam mengukur kemajuan
+        masyarakat di luar PDB, dan bagaimana indeks-indeks ini dapat
+        ditingkatkan menggunakan model prediktif?
+\end{enumerate}
+
+\section{Tujuan dan Manfaat}
+\subsection{Tujuan Penelitian}
+Adapun tujuan dari penelitian ini sebagai berikut.
+\begin{enumerate}[label=\arabic*., leftmargin=*, itemsep=2pt]
+  \item Menganalisis kontribusi \textit{machine learning} terhadap akurasi
+        prediksi kesejahteraan.
+  \item Mengungkap hubungan antara PDB, ketimpangan pendapatan, dan kebahagiaan.
+  \item Mengevaluasi efektivitas indeks kebahagiaan yang ada.
+\end{enumerate}
+
+\subsection{Manfaat Penelitian}
+Adapun manfaat penelitian ini sebagai berikut.
+\begin{enumerate}[label=\arabic*., leftmargin=*, itemsep=2pt]
+  \item Menyediakan metode prediksi kesejahteraan yang lebih akurat.
+  \item Memberikan pemahaman hubungan PDB, ketimpangan pendapatan, dan kebahagiaan.
+  \item Menghasilkan pengembangan indeks kebahagiaan berbasis model prediktif.
+\end{enumerate}
+
+\section{Ruang Lingkup}
+Adapun ruang lingkup dari penelitian ini adalah.
+\begin{enumerate}[label=\arabic*., leftmargin=*, itemsep=2pt]
+  \item Menggunakan \textit{literature} dari \textit{database} Scopus (Q1--Q4).
+  \item Menerapkan \textit{filter} tahun publikasi 2019--2024.
+  \item Menggunakan \textit{keyword} spesifik untuk pencarian literatur.
+  \item \textit{Tools} yang digunakan adalah WATASE UAKE dengan metode utama PRISMA.
+\end{enumerate}
+
+%------------------------------------------------------------------ BAB II
+\chapter{LANDASAN TEORI}\justifying
+
+\section{State of the Art}
+Uraikan posisi penelitian terhadap karya terdahulu.
+
+\section{Hasil Survey Studi Literatur}
+Bagian ini menyajikan hasil survei literatur berdasarkan pendekatan PRISMA.
+
+% Contoh tabel panjang (dapat melintasi beberapa halaman) -- Tinjauan Pustaka.
+\begin{longtable}{>{\raggedright}p{1.6cm} p{2.2cm} p{2.2cm} p{4cm} p{3cm}}
+  \caption{Tinjauan Pustaka}\label{tab:tinjauan}\\
+  \toprule
+  \textbf{Penulis} & \textbf{Metode} & \textbf{Model} & \textbf{Tujuan} & \textbf{Evaluasi Metrik}\\
+  \midrule
+  \endfirsthead
+  \multicolumn{5}{l}{\small\itshape Lanjutan Tabel \thetable}\\
+  \toprule
+  \textbf{Penulis} & \textbf{Metode} & \textbf{Model} & \textbf{Tujuan} & \textbf{Evaluasi Metrik}\\
+  \midrule
+  \endhead
+  \midrule \multicolumn{5}{r}{\small\itshape bersambung ke halaman berikutnya}\\
+  \endfoot
+  \bottomrule
+  \endlastfoot
+  \cite{kaufman2022} & Regresi & Lasso Regression & Memprediksi kebahagiaan lansia & RMSE = 1.195; R\textsuperscript{2} = 0.319\\
+  \cite{ruggeri2020} & Regresi & Ridge Regression & Estimasi GDP subnasional & R\textsuperscript{2} = 0.95; MSE = 0.01\\
+  \cite{casaccia2020} & Klasifikasi & Random Forest & Prediksi kesejahteraan mental & Akurasi = 0.921; AUC = 0.966\\
+\end{longtable}
+
+\section{Tinjauan Waktu dan Wilayah Studi}
+% Contoh penyisipan gambar.
+\begin{figure}[ht]\centering
+  \includegraphics[width=0.5\textwidth]{\logo}
+  \caption{Tahun publikasi studi}\label{fig:tahun}
+\end{figure}
+Sebagaimana ditunjukkan pada Gambar~\ref{fig:tahun}, \dots
+
+\section{Area Studi dan Tren Metodologi Terdahulu}
+\section{Analisis Word Cloud}
+\section{Distribusi Hipotesis dan Variabel}
+
+\section{\textit{Watase Network Analysis} (WNA)}
+\subsection{Analisis Teori}
+\subsection{Analisis Konteks}
+
+\section{Gap Penelitian}
+\subsection{Evidence Gap}
+\subsection{Empirical Gap}
+
+\section{Analisis Pendekatan}
+
+\section{Analisis Konten}
+\subsection{Integrasi \textit{machine learning} untuk prediksi kesejahteraan (RQ1)}
+\subsection{Peran PDB dan ketimpangan pendapatan (RQ2)}
+\subsection{Aplikasi baru indeks kebahagiaan (RQ3)}
+
+%------------------------------------------------------------------ BAB III
+\chapter{METODOLOGI PENELITIAN}\justifying
+
+\section{Diagram Alur Penelitian}
+\section{Penjelasan Diagram Alur Metodologi Penelitian}
+\subsection{\textit{Identification}}
+\subsection{\textit{Screening}}
+\subsection{\textit{Included}}
+
+%------------------------------------------------------------------ BAB IV
+\chapter{PENUTUP}\justifying
+
+\section{Kesimpulan dan Saran}
+\subsection{Kesimpulan}
+\subsection{Saran}
+
+\section{Lampiran--Lampiran}
+% \textit{Lampiran 1 Formulir Kemajuan Bimbingan Internship 2}
+% \includegraphics[width=0.8\textwidth]{images/lampiran1.jpg}
+
+%==============================================================================
+%  DAFTAR PUSTAKA  (gaya IEEE)
+%==============================================================================
+\renewcommand{\thepage}{\arabic{page}}   % daftar pustaka memakai nomor biasa
+\addcontentsline{toc}{chapter}{DAFTAR PUSTAKA}
+\bibliographystyle{IEEEtran}
+\bibliography{references}
+
+\end{document}
