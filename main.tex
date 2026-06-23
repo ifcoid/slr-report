@@ -3,7 +3,14 @@
 %  Program Diploma IV Teknik Informatika
 %  Universitas Logistik dan Bisnis Internasional (ULBI)
 %
-%  Hasil konversi LaTeX dari "templateslr.docx".
+%  Kerangka mengikuti templateslr.docx (sampul/format ULBI) DAN disesuaikan
+%  dengan ../nsa/GENERATEREPORT.md agar komprehensif & layak artikel Q1:
+%  struktur IMRaD + PRISMA 2020 (M1-M9), transparansi/provenans (xAI).
+%
+%  Tiap sub-bab diberi komentar "[sumber: <koleksi.field>]" yang memetakan ke
+%  state MongoDB (slr_sessions / slr_screening / slr_extraction) seperti pada
+%  GENERATEREPORT.md, sehingga isi dapat diisi langsung dari pipeline SLR.
+%  Catatan: angka PRISMA DIHITUNG ULANG dari slr_screening (lihat BAB IV).
 %
 %  Kompilasi:
 %     pdflatex main
@@ -35,10 +42,29 @@
 \usepackage{array}
 \usepackage{longtable}
 \usepackage{booktabs}
+\usepackage{multirow}
+\usepackage{threeparttable}
+\usepackage{pdflscape}                  % tabel ekstraksi lebar (landscape)
 \usepackage{ragged2e}
 \usepackage{titlesec}
+\usepackage{titletoc}
+\usepackage{tocloft}
 \usepackage{fancyhdr}
 \usepackage{caption}
+
+%------------------------------------------------------------------ judul DAFTAR ISI/GAMBAR/TABEL (rata tengah, gaya BAB)
+\renewcommand{\cfttoctitlefont}{\hfill\normalfont\large\bfseries\MakeUppercase}
+\renewcommand{\cftloftitlefont}{\hfill\normalfont\large\bfseries\MakeUppercase}
+\renewcommand{\cftlottitlefont}{\hfill\normalfont\large\bfseries\MakeUppercase}
+\renewcommand{\cftaftertoctitle}{\hfill}
+\renewcommand{\cftafterloftitle}{\hfill}
+\renewcommand{\cftafterlottitle}{\hfill}
+% Entri BAB pada Daftar Isi tampil sebagai "BAB I  PENDAHULUAN".
+\renewcommand{\cftchappresnum}{BAB\space}
+\renewcommand{\cftchapaftersnum}{\quad}
+\renewcommand{\cftchapnumwidth}{4.6em}
+\renewcommand{\cftchapfont}{\bfseries}
+\renewcommand{\cftchappagefont}{\bfseries}
 % hypertexnames=false -> anchor halaman dibuat berurutan secara internal,
 % sehingga reset nomor halaman tiap BAB tidak menimbulkan bentrokan anchor.
 \usepackage[hidelinks,hypertexnames=false]{hyperref}
@@ -56,6 +82,7 @@
 % Bab heading memakai angka Romawi (BAB I, BAB II), namun penomoran sub-bab,
 % gambar, dan tabel memakai angka Arab seperti pada dokumen sumber.
 \setcounter{secnumdepth}{3}
+\renewcommand{\thechapter}{\Roman{chapter}}   % BAB I, II, ... (gambar/tabel tetap arabic)
 \renewcommand{\thesection}{\arabic{section}}
 \renewcommand{\thesubsection}{\thesection.\arabic{subsection}}
 \renewcommand{\thesubsubsection}{\thesubsection.\arabic{subsubsection}}
@@ -178,24 +205,36 @@
 \chapter*{ABSTRAK}
 \addcontentsline{toc}{chapter}{ABSTRAK}
 \justifying
-Tuliskan abstrak Bahasa Indonesia di sini: latar belakang singkat, tujuan
-\textit{Systematic Literature Review} (SLR), metode (mis. PRISMA), ringkasan
-temuan, dan kontribusi penelitian. Satu paragraf, umumnya 150--250 kata.
+% Abstrak terstruktur (gaya Q1). Sumber: manuscript.abstract.
+\textbf{Latar Belakang.} Konteks singkat dan kesenjangan yang dijawab.
+\textbf{Tujuan.} Pernyataan tujuan \textit{Systematic Literature Review} (SLR)
+dan pertanyaan penelitian (RQ). \textbf{Metode.} Tinjauan sistematis sesuai
+pedoman PRISMA 2020; basis data, rentang waktu, kriteria PICO, proses seleksi
+dua penilai (kappa), ekstraksi data, penilaian kualitas, dan penilaian kepastian
+bukti (GRADE). \textbf{Hasil.} Jumlah studi yang disertakan serta temuan utama
+per-RQ. \textbf{Kesimpulan.} Implikasi, keterbatasan, dan arah penelitian
+selanjutnya. (Umumnya 200--300 kata, satu paragraf terstruktur.)
 
 \par\vspace{1em}
-\noindent\textbf{Kata Kunci:} \textit{Machine Learning, Well-Being Prediction,
-Life Satisfaction, Happiness Index, Socio-economic Factors}
+\noindent\textbf{Kata Kunci:} \textit{Systematic Literature Review, PRISMA,
+Machine Learning, Well-Being Prediction, Socio-economic Factors}
 
 %------------------------------------------------------------------ ABSTRACT
 \chapter*{ABSTRACT}
 \addcontentsline{toc}{chapter}{\textit{ABSTRACT}}
 \justifying
-\textit{Write the English abstract here as a faithful translation of the
-Indonesian abstract above.}
+\textit{\textbf{Background.} Brief context and the gap addressed.
+\textbf{Objective.} The aim of this Systematic Literature Review (SLR) and the
+research questions. \textbf{Methods.} A systematic review conducted following
+the PRISMA 2020 guidelines; databases, time span, PICO eligibility criteria,
+dual-reviewer selection (kappa), data extraction, quality appraisal, and
+certainty-of-evidence assessment (GRADE). \textbf{Results.} The number of
+included studies and the main findings per RQ. \textbf{Conclusion.}
+Implications, limitations, and directions for future research.}
 
 \par\vspace{1em}
-\noindent\textbf{Keyword:} \textit{Machine Learning, Neural Decoding,
-Alphanumeric, Brain-Computer Interface, Systematic Literature Review (SLR)}
+\noindent\textbf{Keyword:} \textit{Systematic Literature Review, PRISMA,
+Machine Learning, Well-Being Prediction, Socio-economic Factors}
 
 %------------------------------------------------------------------ KATA PENGANTAR
 \chapter*{KATA PENGANTAR}
@@ -228,7 +267,13 @@ saran dari pembaca sangat diharapkan.
 
 \chapter*{DAFTAR LAMPIRAN}
 \addcontentsline{toc}{chapter}{DAFTAR LAMPIRAN}
-\begin{description}[leftmargin=0pt,labelindent=0pt]
+\begin{description}[leftmargin=0pt,labelindent=0pt,itemsep=2pt]
+  \item[] Lampiran A\quad Tabel Ekstraksi Data Lengkap
+  \item[] Lampiran B\quad Daftar Studi yang Dieksklusi beserta Alasan
+  \item[] Lampiran C\quad String Pencarian per Basis Data
+  \item[] Lampiran D\quad Provenans, Atribusi Model, dan Jejak xAI
+  \item[] Lampiran E\quad Daftar Periksa (Checklist) PRISMA 2020
+  \item[] Lampiran F\quad Catatan Deviasi Protokol
   \item[] Lampiran 1\quad Formulir Kemajuan Bimbingan Internship 2
 \end{description}
 
@@ -237,138 +282,327 @@ saran dari pembaca sangat diharapkan.
 %==============================================================================
 \mulaiisi
 
-%------------------------------------------------------------------ BAB I
+%==============================================================================
+%  BAB I  --  PENDAHULUAN (Introduction)  [Modul M1-M2]
+%==============================================================================
 \chapter{PENDAHULUAN}\justifying
 
 \section{Latar Belakang}
-Uraikan latar belakang penelitian: fenomena/masalah, urgensi, ringkasan
-penelitian terdahulu, dan posisi penelitian ini. Sitasi memakai gaya IEEE,
-contoh \cite{kaufman2022,ruggeri2020}. Beberapa sumber sekaligus
+% [sumber: selected_topic (Name,Gap,Type,Evidence,Importance), foundation
+%  (FoundationBriefing), manuscript.introduction]
+Uraikan konteks dan fenomena, urgensi, ringkasan bukti awal, serta kesenjangan
+(\textit{research gap}) dan justifikasi pentingnya topik. Sitasi gaya IEEE,
+contoh \cite{kaufman2022,ruggeri2020}, dan beberapa sumber sekaligus
 \cite{casaccia2020,izumi2021}.
 
-\section{Identifikasi Masalah}
-Adapun identifikasi masalah dari penelitian ini sebagai berikut.
-\begin{enumerate}[label=\arabic*., leftmargin=*, itemsep=2pt]
-  \item Bagaimana integrasi teknik \textit{machine learning} dapat meningkatkan
+\section{Rumusan Masalah}
+% [sumber: research_questions[] (+ traceability ke prior_reviews_matrix)]
+Berdasarkan latar belakang, pertanyaan penelitian (\textit{Research Questions})
+yang dijawab tinjauan ini adalah:
+\begin{enumerate}[label=\textbf{RQ\arabic*.}, leftmargin=*, itemsep=2pt]
+  \item Bagaimana integrasi teknik \textit{machine learning} meningkatkan
         prediksi kesejahteraan dan kepuasan hidup di berbagai konteks sosioekonomi?
-  \item Apa peran PDB dan ketimpangan pendapatan dalam memengaruhi kebahagiaan
-        dan kualitas hidup, dan bagaimana \textit{machine learning} dapat
-        memberikan wawasan yang lebih mendalam tentang hubungan ini?
-  \item Apa saja aplikasi baru dari indeks kebahagiaan dalam mengukur kemajuan
-        masyarakat di luar PDB, dan bagaimana indeks-indeks ini dapat
-        ditingkatkan menggunakan model prediktif?
+  \item Apa peran PDB dan ketimpangan pendapatan terhadap kebahagiaan dan
+        kualitas hidup, dan bagaimana \textit{machine learning} memberikan
+        wawasan lebih mendalam atas hubungan ini?
+  \item Apa saja aplikasi baru indeks kebahagiaan dalam mengukur kemajuan
+        masyarakat di luar PDB, dan bagaimana indeks tersebut dapat ditingkatkan
+        dengan model prediktif?
 \end{enumerate}
 
-\section{Tujuan dan Manfaat}
+\section{Tujuan dan Manfaat Penelitian}
 \subsection{Tujuan Penelitian}
-Adapun tujuan dari penelitian ini sebagai berikut.
 \begin{enumerate}[label=\arabic*., leftmargin=*, itemsep=2pt]
   \item Menganalisis kontribusi \textit{machine learning} terhadap akurasi
-        prediksi kesejahteraan.
-  \item Mengungkap hubungan antara PDB, ketimpangan pendapatan, dan kebahagiaan.
-  \item Mengevaluasi efektivitas indeks kebahagiaan yang ada.
+        prediksi kesejahteraan (RQ1).
+  \item Mengungkap hubungan PDB, ketimpangan pendapatan, dan kebahagiaan (RQ2).
+  \item Mengevaluasi dan menyempurnakan indeks kebahagiaan berbasis model
+        prediktif (RQ3).
 \end{enumerate}
 
 \subsection{Manfaat Penelitian}
-Adapun manfaat penelitian ini sebagai berikut.
 \begin{enumerate}[label=\arabic*., leftmargin=*, itemsep=2pt]
-  \item Menyediakan metode prediksi kesejahteraan yang lebih akurat.
-  \item Memberikan pemahaman hubungan PDB, ketimpangan pendapatan, dan kebahagiaan.
-  \item Menghasilkan pengembangan indeks kebahagiaan berbasis model prediktif.
+  \item Menyediakan sintesis bukti yang dapat ditindaklanjuti bagi peneliti dan
+        pembuat kebijakan.
+  \item Memberikan peta metodologis penggunaan \textit{machine learning} dalam
+        studi kesejahteraan.
+  \item Mengidentifikasi kesenjangan dan agenda penelitian lanjutan.
 \end{enumerate}
 
-\section{Ruang Lingkup}
-Adapun ruang lingkup dari penelitian ini adalah.
+\section{Ruang Lingkup dan Batasan}
+% [sumber: scope_filters, scope_justifications[]]
 \begin{enumerate}[label=\arabic*., leftmargin=*, itemsep=2pt]
-  \item Menggunakan \textit{literature} dari \textit{database} Scopus (Q1--Q4).
-  \item Menerapkan \textit{filter} tahun publikasi 2019--2024.
-  \item Menggunakan \textit{keyword} spesifik untuk pencarian literatur.
-  \item \textit{Tools} yang digunakan adalah WATASE UAKE dengan metode utama PRISMA.
+  \item Basis data dan tingkat kuartil yang digunakan (mis. Scopus, Q1--Q4).
+  \item Rentang waktu publikasi (mis. 2019--2024) beserta justifikasinya.
+  \item Bahasa, jenis dokumen, dan kriteria cakupan lainnya.
+  \item Perkakas dan kerangka utama (mis. PRISMA 2020).
 \end{enumerate}
 
-%------------------------------------------------------------------ BAB II
-\chapter{LANDASAN TEORI}\justifying
-
-\section{State of the Art}
-Uraikan posisi penelitian terhadap karya terdahulu.
-
-\section{Hasil Survey Studi Literatur}
-Bagian ini menyajikan hasil survei literatur berdasarkan pendekatan PRISMA.
-
-% Contoh tabel panjang (dapat melintasi beberapa halaman) -- Tinjauan Pustaka.
-\begin{longtable}{>{\raggedright}p{1.6cm} p{2.2cm} p{2.2cm} p{4cm} p{3cm}}
-  \caption{Tinjauan Pustaka}\label{tab:tinjauan}\\
-  \toprule
-  \textbf{Penulis} & \textbf{Metode} & \textbf{Model} & \textbf{Tujuan} & \textbf{Evaluasi Metrik}\\
-  \midrule
-  \endfirsthead
-  \multicolumn{5}{l}{\small\itshape Lanjutan Tabel \thetable}\\
-  \toprule
-  \textbf{Penulis} & \textbf{Metode} & \textbf{Model} & \textbf{Tujuan} & \textbf{Evaluasi Metrik}\\
-  \midrule
-  \endhead
-  \midrule \multicolumn{5}{r}{\small\itshape bersambung ke halaman berikutnya}\\
-  \endfoot
-  \bottomrule
-  \endlastfoot
-  \cite{kaufman2022} & Regresi & Lasso Regression & Memprediksi kebahagiaan lansia & RMSE = 1.195; R\textsuperscript{2} = 0.319\\
-  \cite{ruggeri2020} & Regresi & Ridge Regression & Estimasi GDP subnasional & R\textsuperscript{2} = 0.95; MSE = 0.01\\
-  \cite{casaccia2020} & Klasifikasi & Random Forest & Prediksi kesejahteraan mental & Akurasi = 0.921; AUC = 0.966\\
-\end{longtable}
-
-\section{Tinjauan Waktu dan Wilayah Studi}
-% Contoh penyisipan gambar.
-\begin{figure}[ht]\centering
-  \includegraphics[width=0.5\textwidth]{\logo}
-  \caption{Tahun publikasi studi}\label{fig:tahun}
-\end{figure}
-Sebagaimana ditunjukkan pada Gambar~\ref{fig:tahun}, \dots
-
-\section{Area Studi dan Tren Metodologi Terdahulu}
-\section{Analisis Word Cloud}
-\section{Distribusi Hipotesis dan Variabel}
-
-\section{\textit{Watase Network Analysis} (WNA)}
-\subsection{Analisis Teori}
-\subsection{Analisis Konteks}
-
-\section{Gap Penelitian}
-\subsection{Evidence Gap}
-\subsection{Empirical Gap}
-
-\section{Analisis Pendekatan}
-
-\section{Analisis Konten}
-\subsection{Integrasi \textit{machine learning} untuk prediksi kesejahteraan (RQ1)}
-\subsection{Peran PDB dan ketimpangan pendapatan (RQ2)}
-\subsection{Aplikasi baru indeks kebahagiaan (RQ3)}
-
-%------------------------------------------------------------------ BAB III
-\chapter{METODOLOGI PENELITIAN}\justifying
-
-\section{Diagram Alur Penelitian}
-\section{Penjelasan Diagram Alur Metodologi Penelitian}
-\subsection{\textit{Identification}}
-\subsection{\textit{Screening}}
-\subsection{\textit{Included}}
-
-%------------------------------------------------------------------ BAB IV
-\chapter{PENUTUP}\justifying
-
-\section{Kesimpulan dan Saran}
-\subsection{Kesimpulan}
-\subsection{Saran}
-
-\section{Lampiran--Lampiran}
-% \textit{Lampiran 1 Formulir Kemajuan Bimbingan Internship 2}
-% \includegraphics[width=0.8\textwidth]{images/lampiran1.jpg}
+\section{Sistematika Penulisan}
+Ringkasan isi tiap bab: BAB II tinjauan pustaka dan kebaruan; BAB III metodologi
+PRISMA; BAB IV hasil dan pembahasan; BAB V penutup.
 
 %==============================================================================
-%  DAFTAR PUSTAKA  (gaya IEEE)
+%  BAB II  --  TINJAUAN PUSTAKA (Background & Related Work)  [Modul M1-M2]
+%==============================================================================
+\chapter{TINJAUAN PUSTAKA}\justifying
+
+\section{Landasan Teori}
+% [sumber: foundation (FoundationBriefing)]
+Konsep dan teori dasar yang menopang tinjauan.
+
+\section{Tinjauan Review Terdahulu dan Posisi Kebaruan}
+% [sumber: prior_reviews_matrix.reviews[] (author_year, scope, methodology,
+%  key_findings, limitations, selisih, synthesis_novelty, verification),
+%  prior_reviews_matrix.search_guidance, finer_novelty_check]
+Posisi penelitian terhadap review terdahulu disajikan pada Tabel~\ref{tab:prior}.
+Kolom \emph{Verifikasi} menandai status VERIFIED/UNVERIFIED sebagai bagian
+transparansi (lihat BAB III.\,Transparansi).
+
+\begin{longtable}{>{\raggedright}p{2.6cm} p{3.2cm} p{4.2cm} p{2.2cm}}
+  \caption{Matriks Review Terdahulu dan Celah Kebaruan}\label{tab:prior}\\
+  \toprule
+  \textbf{Penulis (Tahun)} & \textbf{Cakupan / Metode} & \textbf{Temuan \& Keterbatasan} & \textbf{Selisih / Verifikasi}\\
+  \midrule\endfirsthead
+  \multicolumn{4}{l}{\small\itshape Lanjutan Tabel \thetable}\\ \toprule
+  \textbf{Penulis (Tahun)} & \textbf{Cakupan / Metode} & \textbf{Temuan \& Keterbatasan} & \textbf{Selisih / Verifikasi}\\
+  \midrule\endhead
+  \midrule \multicolumn{4}{r}{\small\itshape bersambung\dots}\\ \endfoot
+  \bottomrule\endlastfoot
+  \cite{agrawal2023} & Tinjauan sistematis ekonomi kebahagiaan & Tren riset; minim integrasi ML & Tidak meninjau ML prediktif / VERIFIED\\
+\end{longtable}
+
+\section{State of the Art}
+% [sumber: selected_topic, foundation]
+Ringkasan perkembangan mutakhir dan kontribusi tinjauan ini.
+
+\section{Kerangka Pemikiran dan Kesenjangan Penelitian}
+% [sumber: evidence gap & empirical gap pada analisis foundation/prior reviews]
+\subsection{\textit{Evidence Gap}}
+\subsection{\textit{Empirical Gap}}
+
+%==============================================================================
+%  BAB III  --  METODOLOGI (Methods, PRISMA 2020)  [Modul M2-M8]
+%==============================================================================
+\chapter{METODOLOGI PENELITIAN}\justifying
+Tinjauan dilakukan mengikuti pedoman PRISMA 2020. Protokol ditetapkan
+\emph{a priori} sebelum pencarian dijalankan.
+
+\section{Desain dan Protokol Tinjauan}
+% [sumber: modul2_summary; status protokol a priori]
+Jenis studi, registrasi/penetapan protokol, dan perubahan (amendemen) bila ada.
+
+\section{Kriteria Kelayakan (PICO)}
+% [sumber: pico_definitions (P/I/C/O canonical), inclusion_criteria[],
+%  exclusion_criteria[]]
+\begin{table}[ht]\centering
+  \caption{Kriteria Inklusi dan Eksklusi (PICO)}\label{tab:pico}
+  \begin{tabular}{>{\raggedright}p{2cm} p{5cm} p{5cm}}
+    \toprule
+    \textbf{Elemen} & \textbf{Inklusi} & \textbf{Eksklusi}\\
+    \midrule
+    Population   & \dots & \dots\\
+    Intervention & \dots & \dots\\
+    Comparison   & \dots & \dots\\
+    Outcome      & \dots & \dots\\
+    \bottomrule
+  \end{tabular}
+\end{table}
+
+\section{Sumber Informasi dan Strategi Pencarian}
+% [sumber: database_selection, keywords, search_string (per database), search_log]
+Basis data dan justifikasi, pengembangan kata kunci, serta \textit{search string}
+final per basis data (lihat Lampiran C) dan log eksekusi pencarian agar
+\emph{reproducible}.
+
+\section{Proses Seleksi Studi}
+\subsection{Identifikasi dan Deduplikasi}
+% [sumber: data_mining_log (QualityAudit.TotalRecords, Dedup.TotalDuplicates),
+%  slr_papers / slr_papers_post_dedup, screening_setup]
+\subsection{Skrining Judul dan Abstrak (Dua Penilai)}
+% [sumber: screener_briefing, kalibrasi_log[] (kappa, sampel),
+%  reviewer1/2_perspectives[], screening_results_log[], exclusion_table,
+%  pico_audit_log; keputusan per-paper: slr_screening.Screener_*_Decision]
+Dua penilai independen menilai judul/abstrak; konflik diselesaikan arbiter.
+Reliabilitas antarpenilai dilaporkan sebagai koefisien \textit{kappa}.
+\subsection{Penilaian Kelayakan Teks Lengkap}
+% [sumber: acquisition_log (retrieved/inaccessible), fulltext_screening_log[],
+%  fulltext_kappa, inaccessible_impact, extraction_readiness,
+%  final_pico_audit_md/ok; per-paper: slr_screening.*_Decision_Full]
+
+\section{Ekstraksi Data}
+% [sumber: framework_selection (Framework, Justification, Columns[], ModelUsed),
+%  extraction_log (TotalExtracted, VerifiedSample, DisagreementRate, ...),
+%  per-paper: slr_extraction.fields[]{key,value,evidence,status}]
+Protokol ekstraksi (kerangka + kolom data) bersifat stabil. Verifikasi silang
+20\% sampel oleh penilai kedua dilaporkan (\textit{verified sample},
+\textit{disagreement rate}); bila verifikasi tidak berjalan, dilaporkan apa adanya.
+
+\section{Penilaian Kualitas Studi (\textit{Quality Appraisal})}
+% [sumber: qa_threshold_justification, qa_calibration, sensitivity_analysis;
+%  per-paper: slr_extraction.qa_* (skor, kategori, reasoning, evidence, model)]
+
+\section{Strategi Sintesis Data}
+% [sumber: synthesis_path_decision (naratif vs meta-analisis), synthesis_prep]
+Justifikasi jalur sintesis (naratif terstruktur atau meta-analisis) sesuai
+heterogenitas studi.
+
+\section{Penilaian Kepastian Bukti (GRADE)}
+% [sumber: grade_evidence_table]
+Kepastian bukti dinilai dengan kerangka GRADE.
+
+\section{Transparansi, Provenans, dan Reproduksibilitas}
+% [sumber: slr_extraction.fields[].evidence (kutipan+section), atribusi model
+%  (provider+model) tiap artefak AI, slr_sessions.xai_log[], screening_corrections[]]
+Setiap nilai terekstrak membawa \emph{evidence} (kutipan + bagian sumber); setiap
+keluaran AI mencantumkan \emph{provider + nama model}; jejak panggilan LLM
+(\texttt{xai\_log}) dan audit koreksi keputusan (\texttt{screening\_corrections})
+diarsipkan (lihat Lampiran D dan F).
+
+%==============================================================================
+%  BAB IV  --  HASIL DAN PEMBAHASAN (Results & Discussion)  [Modul M7-M9]
+%==============================================================================
+\chapter{HASIL DAN PEMBAHASAN}\justifying
+
+\section{Hasil Seleksi Studi (Diagram Alur PRISMA)}
+% [sumber: PRISMA DIHITUNG ULANG dari slr_screening (+ data_mining_log);
+%  jangan menyalin angka lama. Komponen: Identified, DuplicatesRemoved,
+%  Screened, ExcludedTA, Sought, NotRetrieved, Assessed, ExcludedFT(+reasons),
+%  Included, Warnings. Deviasi: screening_corrections[].]
+Angka PRISMA dihitung ulang secara deterministik dari keputusan final
+\texttt{slr\_screening}. Diagram alur ditunjukkan pada Gambar~\ref{fig:prisma}
+dan rekapitulasinya pada Tabel~\ref{tab:prisma}.
+
+\begin{figure}[ht]\centering
+  % Ganti dengan diagram alur PRISMA 2020 yang dihasilkan (mis. dari pipeline).
+  \includegraphics[width=0.45\textwidth]{\logo}
+  \caption{Diagram alur PRISMA 2020 pemilihan studi}\label{fig:prisma}
+\end{figure}
+
+\begin{table}[ht]\centering
+  \caption{Rekapitulasi Alur PRISMA (dihitung ulang dari basis data)}\label{tab:prisma}
+  \begin{tabular}{l r}
+    \toprule
+    \textbf{Tahap} & \textbf{Jumlah}\\
+    \midrule
+    Records identified                & \dots\\
+    Duplicates removed                 & \dots\\
+    Records screened (title/abstract)  & \dots\\
+    Excluded (title/abstract)          & \dots\\
+    Reports sought for retrieval       & \dots\\
+    Reports not retrieved              & \dots\\
+    Reports assessed (full-text)       & \dots\\
+    Excluded (full-text, with reasons) & \dots\\
+    \textbf{Studies included}          & \textbf{\dots}\\
+    \bottomrule
+  \end{tabular}
+\end{table}
+
+\section{Karakteristik Studi yang Disertakan}
+% [sumber: slr_extraction.fields[] (pivot: baris=paper, kolom=framework_selection
+%  .columns[].key), descriptive_analysis (deskriptif + heterogenitas)]
+Karakteristik studi (mis. tahun, wilayah, metode, model, metrik) dirangkum dari
+data terekstrak; tabel lengkap pada Lampiran~A. Contoh ringkas:
+
+\begin{longtable}{>{\raggedright}p{1.6cm} p{2.2cm} p{2.4cm} p{3.6cm} p{3cm}}
+  \caption{Ringkasan Studi yang Disertakan}\label{tab:included}\\
+  \toprule
+  \textbf{Studi} & \textbf{Metode} & \textbf{Model} & \textbf{Tujuan} & \textbf{Metrik Evaluasi}\\
+  \midrule\endfirsthead
+  \multicolumn{5}{l}{\small\itshape Lanjutan Tabel \thetable}\\ \toprule
+  \textbf{Studi} & \textbf{Metode} & \textbf{Model} & \textbf{Tujuan} & \textbf{Metrik Evaluasi}\\
+  \midrule\endhead
+  \midrule \multicolumn{5}{r}{\small\itshape bersambung\dots}\\ \endfoot
+  \bottomrule\endlastfoot
+  \cite{kaufman2022} & Regresi & Lasso & Prediksi kebahagiaan lansia & RMSE=1.195; R\textsuperscript{2}=0.319\\
+  \cite{ruggeri2020} & Regresi & Ridge & Estimasi PDB subnasional & R\textsuperscript{2}=0.95; MSE=0.01\\
+  \cite{casaccia2020} & Klasifikasi & Random Forest & Kesejahteraan mental & Akurasi=0.921; AUC=0.966\\
+\end{longtable}
+
+\section{Hasil Sintesis per Pertanyaan Penelitian}
+% [sumber: synthesis_results (markdown + forest plot script), synthesis_path_decision]
+\subsection{Integrasi \textit{Machine Learning} dan Prediksi Kesejahteraan (RQ1)}
+\subsection{Peran PDB dan Ketimpangan Pendapatan (RQ2)}
+\subsection{Aplikasi Baru Indeks Kebahagiaan (RQ3)}
+
+\section{Kepastian Bukti (GRADE)}
+% [sumber: grade_evidence_table]
+\begin{table}[ht]\centering
+  \caption{Ringkasan Penilaian Kepastian Bukti (GRADE)}\label{tab:grade}
+  \begin{tabular}{p{5cm} p{2.5cm} p{4cm}}
+    \toprule
+    \textbf{Outcome} & \textbf{Kepastian} & \textbf{Alasan penurunan/penaikan}\\
+    \midrule
+    \dots & High/Moderate/Low/Very low & \dots\\
+    \bottomrule
+  \end{tabular}
+\end{table}
+
+\section{Analisis Bibliometrik / SLNA (opsional)}
+% [sumber: bibliometric_data, vosviewer_parameters, cluster_interpretation,
+%  slna_integration, modul_bibliometric_summary]
+
+\section{Pembahasan}
+% [sumber: interpretation_package, manuscript.discussion]
+\subsection{Temuan Utama}
+\subsection{Perbandingan dengan Review Terdahulu}
+% [bandingkan dengan prior_reviews_matrix; tegaskan kebaruan]
+\subsection{Implikasi Teoretis dan Praktis}
+\subsection{Keterbatasan}
+% [sumber: inaccessible_impact, sensitivity_analysis, catatan NRNote/verifikasi]
+
+%==============================================================================
+%  BAB V  --  PENUTUP (Conclusion)  [Modul M8-M9]
+%==============================================================================
+\chapter{PENUTUP}\justifying
+
+\section{Kesimpulan}
+% [sumber: manuscript.conclusions; harus konsisten dengan angka ground-truth]
+Jawaban ringkas atas tiap RQ, konsisten dengan angka PRISMA dari basis data.
+
+\section{Saran dan Arah Penelitian Masa Depan}
+% [sumber: manuscript.future_research]
+
+%==============================================================================
+%  DAFTAR PUSTAKA  (gaya IEEE)  [sumber: manuscript .bib dari Crossref]
 %==============================================================================
 \renewcommand{\thepage}{\arabic{page}}   % daftar pustaka memakai nomor biasa
 \addcontentsline{toc}{chapter}{DAFTAR PUSTAKA}
 \bibliographystyle{IEEEtran}
 \bibliography{references}
+
+%==============================================================================
+%  LAMPIRAN (Appendices)  --  artefak transparansi & replikasi
+%==============================================================================
+\chapter*{LAMPIRAN}
+\addcontentsline{toc}{chapter}{LAMPIRAN}
+
+\section*{Lampiran A\quad Tabel Ekstraksi Data Lengkap}
+% [sumber: slr_extraction.fields[] (pivot penuh semua paper INCLUDE);
+%  gunakan landscape untuk tabel lebar]
+% \begin{landscape}
+%   \begin{longtable}{...} ... \end{longtable}
+% \end{landscape}
+Tabel ekstraksi penuh (baris = paper, kolom = field kerangka ekstraksi),
+disajikan \textit{landscape} bila lebar.
+
+\section*{Lampiran B\quad Daftar Studi yang Dieksklusi beserta Alasan}
+% [sumber: exclusion_table; reason codes pada screening_setup]
+
+\section*{Lampiran C\quad String Pencarian per Basis Data}
+% [sumber: search_string, keywords, search_log]
+
+\section*{Lampiran D\quad Provenans, Atribusi Model, dan Jejak xAI}
+% [sumber: slr_extraction.fields[].evidence, atribusi provider+model tiap artefak,
+%  slr_sessions.xai_log[]]
+
+\section*{Lampiran E\quad Daftar Periksa (Checklist) PRISMA 2020}
+% [27 item PRISMA 2020 + nomor halaman pelaporan]
+
+\section*{Lampiran F\quad Catatan Deviasi Protokol}
+% [sumber: screening_corrections[] (paper, From->To, Reason, At)]
+
+\section*{Lampiran 1\quad Formulir Kemajuan Bimbingan Internship 2}
+% \includegraphics[width=0.8\textwidth]{images/lampiran1.jpg}
 
 \end{document}
