@@ -12,6 +12,10 @@
 %  GENERATEREPORT.md, sehingga isi dapat diisi langsung dari pipeline SLR.
 %  Catatan: angka PRISMA DIHITUNG ULANG dari slr_screening (lihat BAB IV).
 %
+%  Ini TEMPLATE umum: isi tiap bagian dengan data Anda sendiri (mis. hasil
+%  pipeline SLR dari MongoDB masing-masing). Aturan penulisan lengkap ada di
+%  PANDUAN-PENULISAN.md. Lihat README.md untuk cara kompilasi & pengisian.
+%
 %  Kompilasi:
 %     pdflatex main
 %     bibtex   main
@@ -45,6 +49,8 @@
 \usepackage{multirow}
 \usepackage{threeparttable}
 \usepackage{pdflscape}                  % tabel ekstraksi lebar (landscape)
+\usepackage{tikz}                       % diagram alur PRISMA
+\usetikzlibrary{positioning}
 \usepackage{ragged2e}
 \usepackage{titlesec}
 \usepackage{titletoc}
@@ -127,20 +133,37 @@
 %==============================================================================
 %  METADATA  ---  ubah bagian ini sesuai laporan Anda
 %==============================================================================
-\newcommand{\judulID}{TINJAUAN STUDI LITERATUR PERAN \textit{MACHINE LEARNING} DALAM MEMPREDIKSI \textit{HAPPINESS} DAN KESEJAHTERAAN SOSIAL-EKONOMI}
-\newcommand{\judulEN}{A SYSTEMATIC LITERATURE REVIEW ON THE ROLE OF MACHINE LEARNING IN PREDICTING HAPPINESS AND SOCIOECONOMIC WELL-BEING}
+\newcommand{\judulID}{JUDUL LAPORAN DALAM BAHASA INDONESIA}
+\newcommand{\judulEN}{REPORT TITLE IN ENGLISH}
 \newcommand{\jenisID}{LAPORAN INTERNSHIP 2}
 \newcommand{\jenisEN}{INTERNSHIP 2 REPORT}
 \newcommand{\subjudulID}{Diajukan Sebagai Salah Satu Syarat Kelulusan Mata Kuliah Internship~2 Pada Program Pendidikan Diploma IV Teknik Informatika.}
 \newcommand{\subjudulEN}{\textit{Submitted as one of the graduation requirements for the Internship~2 course in the Informatics Engineering Diploma IV Education Program}}
-\newcommand{\penulis}{ROFI NAFIIS ZAIN}
-\newcommand{\nim}{1.21.4.017}
+\newcommand{\penulis}{NAMA LENGKAP MAHASISWA}
+\newcommand{\nim}{NIM}
 \newcommand{\prodi}{PROGRAM DIPLOMA IV TEKNIK INFORMATIKA}
 \newcommand{\fakultas}{SCHOOL OF TECHNOLOGY INFORMATION}
 \newcommand{\universitas}{UNIVERSITAS LOGISTIK DAN BISNIS INTERNASIONAL}
 \newcommand{\kota}{Bandung}
-\newcommand{\bulantahun}{Juni 2026}
+\newcommand{\bulantahun}{Bulan Tahun}
 \newcommand{\logo}{images/logo-ulbi.png}
+
+% Angka PRISMA (default \dots). DIHITUNG ULANG dari slr_screening — dapat
+% ditimpa otomatis oleh berkas hasil generate (lihat scripts/generate_report.py).
+\newcommand{\nIdentified}{\dots}
+\newcommand{\nDuplicates}{\dots}
+\newcommand{\nScreened}{\dots}
+\newcommand{\nExcludedTA}{\dots}
+\newcommand{\nSought}{\dots}
+\newcommand{\nNotRetrieved}{\dots}
+\newcommand{\nAssessed}{\dots}
+\newcommand{\nExcludedFT}{\dots}
+\newcommand{\nIncluded}{\dots}
+\IfFileExists{generated/prisma_counts.tex}{\input{generated/prisma_counts.tex}}{}
+
+% Penanda ketersediaan artefak hasil generate (scripts/generate_report.py).
+\newif\ifGenIncluded
+\newif\ifGenPubYear
 
 %==============================================================================
 \begin{document}
@@ -216,8 +239,8 @@ per-RQ. \textbf{Kesimpulan.} Implikasi, keterbatasan, dan arah penelitian
 selanjutnya. (Umumnya 200--300 kata, satu paragraf terstruktur.)
 
 \par\vspace{1em}
-\noindent\textbf{Kata Kunci:} \textit{Systematic Literature Review, PRISMA,
-Machine Learning, Well-Being Prediction, Socio-economic Factors}
+\noindent\textbf{Kata Kunci:} \textit{kata kunci 1, kata kunci 2, kata kunci 3,
+Systematic Literature Review, PRISMA} (3--6 kata kunci)
 
 %------------------------------------------------------------------ ABSTRACT
 \chapter*{ABSTRACT}
@@ -233,8 +256,8 @@ included studies and the main findings per RQ. \textbf{Conclusion.}
 Implications, limitations, and directions for future research.}
 
 \par\vspace{1em}
-\noindent\textbf{Keyword:} \textit{Systematic Literature Review, PRISMA,
-Machine Learning, Well-Being Prediction, Socio-economic Factors}
+\noindent\textbf{Keyword:} \textit{keyword 1, keyword 2, keyword 3,
+Systematic Literature Review, PRISMA} (3--6 keywords)
 
 %------------------------------------------------------------------ KATA PENGANTAR
 \chapter*{KATA PENGANTAR}
@@ -290,50 +313,41 @@ saran dari pembaca sangat diharapkan.
 \section{Latar Belakang}
 % [sumber: selected_topic (Name,Gap,Type,Evidence,Importance), foundation
 %  (FoundationBriefing), manuscript.introduction]
-Uraikan konteks dan fenomena, urgensi, ringkasan bukti awal, serta kesenjangan
-(\textit{research gap}) dan justifikasi pentingnya topik. Sitasi gaya IEEE,
-contoh \cite{kaufman2022,ruggeri2020}, dan beberapa sumber sekaligus
-\cite{casaccia2020,izumi2021}.
+Uraikan konteks dan fenomena, urgensi, ringkasan bukti awal, kesenjangan
+(\textit{research gap}), serta justifikasi pentingnya topik. Rujukan ditulis
+dengan gaya IEEE, contoh sitasi tunggal \cite{contoh1} dan beberapa sumber
+sekaligus \cite{contoh1,contoh2}.
 
 \section{Rumusan Masalah}
 % [sumber: research_questions[] (+ traceability ke prior_reviews_matrix)]
 Berdasarkan latar belakang, pertanyaan penelitian (\textit{Research Questions})
 yang dijawab tinjauan ini adalah:
 \begin{enumerate}[label=\textbf{RQ\arabic*.}, leftmargin=*, itemsep=2pt]
-  \item Bagaimana integrasi teknik \textit{machine learning} meningkatkan
-        prediksi kesejahteraan dan kepuasan hidup di berbagai konteks sosioekonomi?
-  \item Apa peran PDB dan ketimpangan pendapatan terhadap kebahagiaan dan
-        kualitas hidup, dan bagaimana \textit{machine learning} memberikan
-        wawasan lebih mendalam atas hubungan ini?
-  \item Apa saja aplikasi baru indeks kebahagiaan dalam mengukur kemajuan
-        masyarakat di luar PDB, dan bagaimana indeks tersebut dapat ditingkatkan
-        dengan model prediktif?
+  \item Tuliskan pertanyaan penelitian pertama (RQ1) di sini.
+  \item Tuliskan pertanyaan penelitian kedua (RQ2) di sini.
+  \item Tuliskan pertanyaan penelitian ketiga (RQ3) di sini.
 \end{enumerate}
 
 \section{Tujuan dan Manfaat Penelitian}
 \subsection{Tujuan Penelitian}
 \begin{enumerate}[label=\arabic*., leftmargin=*, itemsep=2pt]
-  \item Menganalisis kontribusi \textit{machine learning} terhadap akurasi
-        prediksi kesejahteraan (RQ1).
-  \item Mengungkap hubungan PDB, ketimpangan pendapatan, dan kebahagiaan (RQ2).
-  \item Mengevaluasi dan menyempurnakan indeks kebahagiaan berbasis model
-        prediktif (RQ3).
+  \item Tuliskan tujuan yang menjawab RQ1.
+  \item Tuliskan tujuan yang menjawab RQ2.
+  \item Tuliskan tujuan yang menjawab RQ3.
 \end{enumerate}
 
 \subsection{Manfaat Penelitian}
 \begin{enumerate}[label=\arabic*., leftmargin=*, itemsep=2pt]
-  \item Menyediakan sintesis bukti yang dapat ditindaklanjuti bagi peneliti dan
-        pembuat kebijakan.
-  \item Memberikan peta metodologis penggunaan \textit{machine learning} dalam
-        studi kesejahteraan.
-  \item Mengidentifikasi kesenjangan dan agenda penelitian lanjutan.
+  \item Manfaat teoretis (kontribusi pada keilmuan).
+  \item Manfaat metodologis.
+  \item Manfaat praktis (bagi praktisi/pembuat kebijakan).
 \end{enumerate}
 
 \section{Ruang Lingkup dan Batasan}
 % [sumber: scope_filters, scope_justifications[]]
 \begin{enumerate}[label=\arabic*., leftmargin=*, itemsep=2pt]
   \item Basis data dan tingkat kuartil yang digunakan (mis. Scopus, Q1--Q4).
-  \item Rentang waktu publikasi (mis. 2019--2024) beserta justifikasinya.
+  \item Rentang waktu publikasi beserta justifikasinya.
   \item Bahasa, jenis dokumen, dan kriteria cakupan lainnya.
   \item Perkakas dan kerangka utama (mis. PRISMA 2020).
 \end{enumerate}
@@ -369,7 +383,8 @@ transparansi (lihat BAB III.\,Transparansi).
   \midrule\endhead
   \midrule \multicolumn{4}{r}{\small\itshape bersambung\dots}\\ \endfoot
   \bottomrule\endlastfoot
-  \cite{agrawal2023} & Tinjauan sistematis ekonomi kebahagiaan & Tren riset; minim integrasi ML & Tidak meninjau ML prediktif / VERIFIED\\
+  \cite{contoh1} & \dots & \dots & \dots / VERIFIED\\
+  \cite{contoh2} & \dots & \dots & \dots / UNVERIFIED\\
 \end{longtable}
 
 \section{State of the Art}
@@ -473,10 +488,41 @@ Angka PRISMA dihitung ulang secara deterministik dari keputusan final
 \texttt{slr\_screening}. Diagram alur ditunjukkan pada Gambar~\ref{fig:prisma}
 dan rekapitulasinya pada Tabel~\ref{tab:prisma}.
 
-\begin{figure}[ht]\centering
-  % Ganti dengan diagram alur PRISMA 2020 yang dihasilkan (mis. dari pipeline).
-  \includegraphics[width=0.45\textwidth]{\logo}
-  \caption{Diagram alur PRISMA 2020 pemilihan studi}\label{fig:prisma}
+% Diagram alur PRISMA 2020 (TikZ). Angka memakai makro \n... di atas yang
+% dapat ditimpa oleh generated/prisma_counts.tex.
+\begin{figure}[ht]\centering\footnotesize
+\begin{tikzpicture}[
+  node distance=7mm and 11mm,
+  arr/.style={->, thick},
+  main/.style={draw, rounded corners=1pt, text width=5.4cm, minimum height=11mm, align=left, inner sep=4pt},
+  side/.style={draw, text width=4.6cm, minimum height=11mm, align=left, inner sep=4pt},
+  phase/.style={draw, fill=black!8, text width=13mm, minimum height=11mm, align=center, font=\bfseries\scriptsize}
+]
+  \node[main] (id)  {Records identified \mbox{(n = \nIdentified)}};
+  \node[main, below=of id]  (scr) {Records screened \mbox{(n = \nScreened)}};
+  \node[main, below=of scr] (sgt) {Reports sought for retrieval \mbox{(n = \nSought)}};
+  \node[main, below=of sgt] (asd) {Reports assessed for eligibility \mbox{(n = \nAssessed)}};
+  \node[main, below=of asd] (inc) {\textbf{Studies included} \mbox{(n = \nIncluded)}};
+
+  \node[side, right=of id]  (dup) {Duplicates removed before screening \mbox{(n = \nDuplicates)}};
+  \node[side, right=of scr] (eta) {Records excluded \mbox{(n = \nExcludedTA)}};
+  \node[side, right=of sgt] (nrt) {Reports not retrieved \mbox{(n = \nNotRetrieved)}};
+  \node[side, right=of asd] (eft) {Reports excluded, with reasons \mbox{(n = \nExcludedFT)}};
+
+  \draw[arr] (id)  -- (scr);
+  \draw[arr] (scr) -- (sgt);
+  \draw[arr] (sgt) -- (asd);
+  \draw[arr] (asd) -- (inc);
+  \draw[arr] (id)  -- (dup);
+  \draw[arr] (scr) -- (eta);
+  \draw[arr] (sgt) -- (nrt);
+  \draw[arr] (asd) -- (eft);
+
+  \node[phase, left=of id]  {Identification};
+  \node[phase, left=of sgt] {Screening};
+  \node[phase, left=of inc] {Included};
+\end{tikzpicture}
+\caption{Diagram alur PRISMA 2020 pemilihan studi}\label{fig:prisma}
 \end{figure}
 
 \begin{table}[ht]\centering
@@ -502,8 +548,22 @@ dan rekapitulasinya pada Tabel~\ref{tab:prisma}.
 % [sumber: slr_extraction.fields[] (pivot: baris=paper, kolom=framework_selection
 %  .columns[].key), descriptive_analysis (deskriptif + heterogenitas)]
 Karakteristik studi (mis. tahun, wilayah, metode, model, metrik) dirangkum dari
-data terekstrak; tabel lengkap pada Lampiran~A. Contoh ringkas:
+data terekstrak; tabel lengkap pada Lampiran~A.
 
+% Figur distribusi tahun -- otomatis muncul bila generated/figs/pub_year.png ada.
+\IfFileExists{generated/figs/pub_year.png}{\GenPubYeartrue}{\GenPubYearfalse}
+\ifGenPubYear
+\begin{figure}[ht]\centering
+  \includegraphics[width=0.7\textwidth]{generated/figs/pub_year.png}
+  \caption{Distribusi tahun publikasi studi yang disertakan}\label{fig:pubyear}
+\end{figure}
+\fi
+
+% Ringkasan studi: pakai tabel hasil generate bila ada, jika tidak tampilkan contoh.
+\IfFileExists{generated/included_summary.tex}{\GenIncludedtrue}{\GenIncludedfalse}
+\ifGenIncluded
+\input{generated/included_summary.tex}
+\else
 \begin{longtable}{>{\raggedright}p{1.6cm} p{2.2cm} p{2.4cm} p{3.6cm} p{3cm}}
   \caption{Ringkasan Studi yang Disertakan}\label{tab:included}\\
   \toprule
@@ -514,10 +574,10 @@ data terekstrak; tabel lengkap pada Lampiran~A. Contoh ringkas:
   \midrule\endhead
   \midrule \multicolumn{5}{r}{\small\itshape bersambung\dots}\\ \endfoot
   \bottomrule\endlastfoot
-  \cite{kaufman2022} & Regresi & Lasso & Prediksi kebahagiaan lansia & RMSE=1.195; R\textsuperscript{2}=0.319\\
-  \cite{ruggeri2020} & Regresi & Ridge & Estimasi PDB subnasional & R\textsuperscript{2}=0.95; MSE=0.01\\
-  \cite{casaccia2020} & Klasifikasi & Random Forest & Kesejahteraan mental & Akurasi=0.921; AUC=0.966\\
+  \cite{contoh1} & \dots & \dots & \dots & \dots\\
+  \cite{contoh2} & \dots & \dots & \dots & \dots\\
 \end{longtable}
+\fi
 
 \section{Hasil Sintesis per Pertanyaan Penelitian}
 % [sumber: synthesis_results (markdown + forest plot script), synthesis_path_decision]
@@ -578,13 +638,11 @@ Jawaban ringkas atas tiap RQ, konsisten dengan angka PRISMA dari basis data.
 \addcontentsline{toc}{chapter}{LAMPIRAN}
 
 \section*{Lampiran A\quad Tabel Ekstraksi Data Lengkap}
-% [sumber: slr_extraction.fields[] (pivot penuh semua paper INCLUDE);
-%  gunakan landscape untuk tabel lebar]
-% \begin{landscape}
-%   \begin{longtable}{...} ... \end{longtable}
-% \end{landscape}
-Tabel ekstraksi penuh (baris = paper, kolom = field kerangka ekstraksi),
-disajikan \textit{landscape} bila lebar.
+% [sumber: slr_extraction.fields[] (pivot penuh semua paper INCLUDE)]
+% Diisi otomatis oleh scripts/generate_report.py (landscape longtable).
+\IfFileExists{generated/extraction_table.tex}{\input{generated/extraction_table.tex}}{%
+Tabel ekstraksi penuh (baris = paper, kolom = field kerangka ekstraksi) akan
+muncul di sini setelah dijalankan \texttt{scripts/generate\_report.py}.}
 
 \section*{Lampiran B\quad Daftar Studi yang Dieksklusi beserta Alasan}
 % [sumber: exclusion_table; reason codes pada screening_setup]

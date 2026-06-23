@@ -230,3 +230,7 @@ __marimo__/
 *.synctex.gz
 *.toc
 main.pdf
+
+# Artefak hasil generate (data-derived, jangan di-commit)
+generated/
+__pycache__/
