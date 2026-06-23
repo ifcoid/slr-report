@@ -123,8 +123,13 @@ def main() -> int:
                     help="berkas .tex yang dipindai untuk \\cite (default: main.tex)")
     ap.add_argument("--offline", action="store_true",
                     help="lewati verifikasi DOI ke Crossref/DataCite (hanya rule 1)")
+    ap.add_argument("--allow-placeholder", action="store_true",
+                    help="anggap entri contoh (DOI 10.0000/...) sebagai peringatan, "
+                         "bukan pelanggaran (dipakai oleh pre-commit hook template)")
     ap.add_argument("--mailto", help="email untuk polite-pool Crossref")
     args = ap.parse_args()
+
+    placeholder_re = re.compile(r"^10\.0000/")
 
     env = load_env(ENV_PATH)
     mailto = args.mailto or getenv(env, "CROSSREF_MAILTO") \
@@ -174,6 +179,9 @@ def main() -> int:
         net_errors = 0
         for k, e in sorted(entries.items()):
             if not e["doi"]:
+                continue
+            if args.allow_placeholder and placeholder_re.match(e["doi"]):
+                print(f"  ~ {k}: {e['doi']} [contoh placeholder — dilewati]")
                 continue
             status = verify_doi(e["doi"], mailto)
             if status in ("CROSSREF", "DATACITE"):

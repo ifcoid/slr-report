@@ -1,0 +1,15 @@
+# Konfigurasi untuk pengguna framework pre-commit (https://pre-commit.com):
+#   pip install pre-commit
+#   pre-commit install
+#
+# Alternatif TANPA framework (hook git asli, tanpa dependensi):
+#   git config core.hooksPath scripts/hooks
+repos:
+  - repo: local
+    hooks:
+      - id: verify-references
+        name: Verifikasi integritas rujukan (sitasi<->BibTeX, DOI<->Crossref/DataCite)
+        entry: python3 scripts/verify_references.py --allow-placeholder
+        language: system
+        pass_filenames: false
+        files: '\.(tex|bib)$'

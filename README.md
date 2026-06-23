@@ -138,3 +138,32 @@ python3 scripts/verify_references.py --offline  # hanya cek sitasi↔BibTeX
 ```
 
 Keluar dengan kode ≠ 0 bila ada pelanggaran (cocok untuk *pre-commit*/CI).
+
+### Pasang sebagai pre-commit hook
+
+Hook git asli sudah tersedia di `scripts/hooks/pre-commit` (tanpa dependensi).
+Aktifkan sekali per *clone*:
+
+```bash
+git config core.hooksPath scripts/hooks
+```
+
+Setiap `git commit` akan menjalankan verifikasi; commit ditolak bila ada
+pelanggaran. Opsi:
+
+```bash
+VERIFY_REFS_OFFLINE=1 git commit ...   # hanya cek sitasi↔BibTeX (tanpa jaringan)
+git commit --no-verify                 # lewati hook sementara
+```
+
+> Entri **contoh** (`10.0000/...`) diperlakukan sebagai peringatan oleh hook
+> (`--allow-placeholder`) agar template tetap dapat di-commit; sebelum
+> mengumpulkan, jalankan `python3 scripts/verify_references.py` (tanpa flag itu)
+> agar placeholder ikut ditolak.
+
+Alternatif memakai framework [pre-commit](https://pre-commit.com) — tersedia
+`.pre-commit-config.yaml`:
+
+```bash
+pip install pre-commit && pre-commit install
+```

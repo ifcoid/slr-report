@@ -1,0 +1,37 @@
+#!/usr/bin/env bash
+# Pre-commit hook: verifikasi integritas rujukan (lihat PANDUAN-PENULISAN.md).
+#
+# Aktifkan (sekali per clone):
+#   git config core.hooksPath scripts/hooks
+#
+# Opsi:
+#   VERIFY_REFS_OFFLINE=1 git commit ...   -> hanya rule 1 (tanpa jaringan)
+#   git commit --no-verify                 -> lewati hook sementara
+set -u
+
+REPO_ROOT="$(git rev-parse --show-toplevel 2>/dev/null)" || exit 0
+cd "$REPO_ROOT" || exit 0
+
+if ! command -v python3 >/dev/null 2>&1; then
+  echo "[pre-commit] python3 tidak tersedia — lewati verifikasi rujukan." >&2
+  exit 0
+fi
+
+# Entri contoh (10.0000/...) dianggap peringatan, bukan pelanggaran.
+ARGS="--allow-placeholder"
+if [ "${VERIFY_REFS_OFFLINE:-0}" = "1" ]; then
+  ARGS="$ARGS --offline"
+fi
+
+echo "[pre-commit] verifikasi integritas rujukan: scripts/verify_references.py $ARGS"
+if ! python3 scripts/verify_references.py $ARGS; then
+  {
+    echo ""
+    echo "[pre-commit] DITOLAK: integritas rujukan gagal (lihat pesan di atas)."
+    echo "  - Perbaiki sitasi/BibTeX/DOI, atau"
+    echo "  - tanpa jaringan: VERIFY_REFS_OFFLINE=1 git commit ..., atau"
+    echo "  - lewati sementara: git commit --no-verify"
+  } >&2
+  exit 1
+fi
+exit 0
