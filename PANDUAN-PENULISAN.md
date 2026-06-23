@@ -46,6 +46,34 @@ program studi berbeda.
 - Gunakan sumber primer mutakhir dan **bereputasi** (jurnal/konferensi
   terindeks). Untuk Q1, perbanyak rujukan Q1/Q2 yang relevan.
 
+### Aturan integritas akademik rujukan (WAJIB)
+
+Untuk mencegah rujukan fiktif/halusinasi dan menjaga ketertelusuran:
+
+1. **Setiap sitasi berasal dari BibTeX.** Semua rujukan ditulis lewat
+   `\cite{kunci}` dengan entri di `references.bib` — **tidak boleh** menulis
+   rujukan secara manual di badan teks atau daftar pustaka.
+2. **Setiap entri BibTeX wajib punya DOI yang terverifikasi.** DOI harus dapat
+   diresolusi ke **Crossref**, atau (bila tidak ada di sana) ke **DataCite**.
+   Entri tanpa DOI atau dengan DOI yang tidak ditemukan **tidak boleh dipakai**.
+3. **Tidak ada rujukan fiktif.** Bila sebuah sumber tidak punya DOI yang
+   terverifikasi, sertakan bukti ketertelusuran lain (mis. URL resmi + tanggal
+   akses) dan tandai statusnya secara jujur.
+4. **Konsistensi.** Jumlah dan identitas rujukan di daftar pustaka = yang
+   benar-benar disitasi (gaya IEEE hanya memuat yang disitasi).
+
+Penegakan otomatis tersedia:
+
+```bash
+python3 scripts/verify_references.py        # cek rule 1 & 2 (online)
+python3 scripts/verify_references.py --offline   # hanya rule 1 (tanpa jaringan)
+```
+
+Skrip keluar dengan kode ≠ 0 bila ada pelanggaran sehingga dapat dipasang di
+*pre-commit* / CI. (Entri **contoh** `10.0000/contoh.x` memang gagal verifikasi —
+ganti dengan rujukan asli.) Bila memakai pipeline SLR, `references.bib` sebaiknya
+dihasilkan dari `manuscript` (.bib Crossref) sesi Anda — lihat `README.md`.
+
 ## 5. Kaidah bahasa
 
 - Ikuti **PUEBI/EYD**; kalimat baku, lugas, dan objektif.
@@ -103,7 +131,9 @@ Laporan mengikuti **IMRaD + PRISMA 2020**. Tiap bagian harus ada:
 
 - [ ] Semua placeholder (`\dots`, "Tuliskan …", NAMA/NIM) sudah diisi.
 - [ ] Semua gambar/tabel dirujuk di teks dan bernomor benar.
-- [ ] Semua sitasi `\cite{}` punya entri di `references.bib`.
+- [ ] Semua sitasi `\cite{}` punya entri di `references.bib` (rule 1).
+- [ ] Semua entri `references.bib` punya DOI terverifikasi Crossref/DataCite
+      (`python3 scripts/verify_references.py` → LULUS) (rule 2).
 - [ ] Angka PRISMA konsisten antara diagram, tabel rekap, dan narasi.
 - [ ] Abstrak ID & EN selaras; kata kunci 3–6.
 - [ ] Lampiran lengkap (ekstraksi, eksklusi, *search string*, provenans,

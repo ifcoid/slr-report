@@ -25,6 +25,7 @@ mengikuti struktur **IMRaD + PRISMA 2020** dengan elemen transparansi/provenans.
 | `images/logo-ulbi.png` | Logo ULBI untuk halaman sampul. |
 | `PANDUAN-PENULISAN.md` | **Aturan penulisan** (format, penomoran, sitasi, dll). |
 | `scripts/generate_report.py` | (Opsional) pengisi artefak dari MongoDB sendiri. |
+| `scripts/verify_references.py` | Cek integritas rujukan (sitasi↔BibTeX, DOI↔Crossref/DataCite). |
 
 ## Cara kompilasi
 
@@ -121,3 +122,19 @@ Script menulis ke folder `generated/` (di-*ignore* git):
 `main.tex` otomatis memakai berkas tersebut bila ada; bila tidak, template tetap
 tampil dengan placeholder. **Angka PRISMA selalu dihitung ulang dari basis
 data**, bukan disalin dari narasi.
+
+Kredensial dibaca dari `.env`; **bila `.env` tidak ada, diambil dari variabel
+lingkungan** (`MONGO_URI`, `DB_NAME`, opsional `CROSSREF_MAILTO`).
+
+## Integritas akademik rujukan
+
+Sesuai **[PANDUAN-PENULISAN.md](PANDUAN-PENULISAN.md)**: setiap sitasi harus
+berasal dari BibTeX, dan setiap entri BibTeX wajib punya DOI yang terverifikasi
+ke **Crossref** (atau **DataCite**). Jalankan pengecek:
+
+```bash
+python3 scripts/verify_references.py            # cek sitasi↔BibTeX + DOI (online)
+python3 scripts/verify_references.py --offline  # hanya cek sitasi↔BibTeX
+```
+
+Keluar dengan kode ≠ 0 bila ada pelanggaran (cocok untuk *pre-commit*/CI).

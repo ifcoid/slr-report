@@ -14,6 +14,7 @@ Prinsip GENERATEREPORT.md:
   * Angka PRISMA DIHITUNG ULANG dari slr_screening (+ data_mining_log), bukan
     disalin dari narasi manuscript.
   * Read-only; kredensial dari /home/adb/awangga/.env (MONGO_URI, DB_NAME).
+    Bila .env tidak ada, dibaca dari variabel lingkungan (os.environ).
 
 Pemakaian:
   python3 scripts/generate_report.py --session <SID> [--db slr_agentic_db]
@@ -36,6 +37,7 @@ FIG_DIR = OUT_DIR / "figs"
 
 # --------------------------------------------------------------------------- env
 def load_env(path: Path) -> dict[str, str]:
+    """Baca .env bila ada (nilai .env diutamakan)."""
     env: dict[str, str] = {}
     if not path.exists():
         return env
@@ -46,6 +48,11 @@ def load_env(path: Path) -> dict[str, str]:
         key, _, val = line.partition("=")
         env[key.strip()] = val.strip().strip('"').strip("'")
     return env
+
+
+def getenv(env: dict[str, str], key: str, default: str | None = None) -> str | None:
+    """Ambil dari .env; bila tidak ada, jatuh ke os.environ; lalu default."""
+    return env.get(key) or os.environ.get(key) or default
 
 
 # ------------------------------------------------------------------ tex helpers
@@ -353,10 +360,11 @@ def main() -> int:
     args = ap.parse_args()
 
     env = load_env(ENV_PATH)
-    uri = env.get("MONGO_URI") or os.environ.get("MONGO_URI")
-    db_name = args.db or env.get("DB_NAME") or "slr_agentic_db"
+    uri = getenv(env, "MONGO_URI")
+    db_name = args.db or getenv(env, "DB_NAME", "slr_agentic_db")
     if not uri:
-        print("ERROR: MONGO_URI tidak ditemukan di /home/adb/awangga/.env", file=sys.stderr)
+        print("ERROR: MONGO_URI tidak ditemukan (cek .env atau variabel lingkungan).",
+              file=sys.stderr)
         return 2
 
     from pymongo import MongoClient
